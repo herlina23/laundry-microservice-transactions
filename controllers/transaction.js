@@ -3,6 +3,9 @@ const Member = require("../models/Member");
 const shortid = require("shortid");
 const Detail = require("../models/Detail");
 const Service = require("../models/Service");
+const Rule = require("../models/Rule");
+
+const axios = require("axios");
 
 module.exports = {
   index: (req, res) => {
@@ -36,6 +39,55 @@ module.exports = {
           .catch(err => console.log(err));
       })
       .catch(err => console.log(err));
+  },
+  hitung: (req, res) => {
+    if (req.user.role == "admin" || req.user.role == "kasir") {
+      Transaction.findById(req.params.id)
+        .then(transaction =>
+          Detail.find({ transaction: transaction._id })
+            .populate("service")
+            .then(details => {
+              let total = 0;
+              details.forEach(detail => {
+                total += detail.qty * detail.service.tarif;
+              });
+              transaction.total = total;
+              Transaction.aggregate([
+                {
+                  $match: { member: transaction.member }
+                },
+                {
+                  $group: {
+                    _id: null,
+                    total: {
+                      $sum: "$total"
+                    },
+                    count: {
+                      $sum: 1
+                    }
+                  }
+                }
+              ]).then(transacts => {
+                axios
+                  .get("http://localhost:3005/api/v1/rules/diskon", {
+                    params: {
+                      f: transacts[0].count,
+                      b: transacts[0].total
+                    }
+                  })
+                  .then(response => {
+                    transaction.discount = response.data.diskon;
+                    transaction.grandTotal =
+                      (transaction.total * (100 - transaction.discount)) / 100;
+                    transaction.save().then(transact => res.json(transact));
+                  });
+              });
+            })
+        )
+        .catch(err => console.log(err));
+    } else {
+      res.sendStatus(403);
+    }
   },
   update: (req, res) => {
     if (req.user.role == "admin" || req.user.role == "kasir") {
