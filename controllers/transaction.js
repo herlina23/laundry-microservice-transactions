@@ -69,7 +69,7 @@ module.exports = {
                 }
               ]).then(transacts => {
                 axios
-                  .get("http://localhost:3005/api/v1/rules/diskon", {
+                  .get("https://laundry-microservice-diskon.herokuapp.com/", {
                     params: {
                       f: transacts[0].count,
                       b: transacts[0].total
