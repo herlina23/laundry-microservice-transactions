@@ -69,12 +69,15 @@ module.exports = {
                 }
               ]).then(transacts => {
                 axios
-                  .get("https://laundry-microservice-diskon.herokuapp.com/", {
-                    params: {
-                      f: transacts[0].count,
-                      b: transacts[0].total
+                  .get(
+                    "https://laundry-microservice-diskon.herokuapp.com/api/v1/rules/diskon?",
+                    {
+                      params: {
+                        f: transacts[0].count,
+                        b: transacts[0].total
+                      }
                     }
-                  })
+                  )
                   .then(response => {
                     transaction.discount = response.data.diskon;
                     transaction.grandTotal =
