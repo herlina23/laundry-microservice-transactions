@@ -54,7 +54,17 @@ module.exports = {
               transaction.total = total;
               Transaction.aggregate([
                 {
-                  $match: { member: transaction.member }
+                  $addFields: {
+                    "month" : {$month: $dateIn},
+                    "year": {$year: $dateIn}
+                   }
+                },
+                {
+                  $match: { 
+                    member: transaction.member,
+                    month: {$month: Date.now()},
+                    year: {$year: Date.now()}
+                  }
                 },
                 {
                   $group: {
