@@ -56,6 +56,7 @@ module.exports = {
               Transaction.aggregate([
                 {
                   $addFields: {
+<<<<<<< HEAD
                     month: { $month: "$dateIn" },
                     year: { $year: "$dateIn" }
                   }
@@ -65,6 +66,17 @@ module.exports = {
                     member: transaction.member,
                     month: dateNow.getMonth(),
                     year: dateNow.getFullYear()
+=======
+                    "month" : {$month: $dateIn},
+                    "year": {$year: $dateIn}
+                   }
+                },
+                {
+                  $match: { 
+                    member: transaction.member,
+                    month: {$month: Date.now()},
+                    year: {$year: Date.now()}
+>>>>>>> d497090d69e0b493592fc3d3568c071bddf8d48c
                   }
                 },
                 {
