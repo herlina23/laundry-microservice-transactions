@@ -52,63 +52,54 @@ module.exports = {
                 total += detail.qty * detail.service.tarif;
               });
               transaction.total = total;
-              let dateNow = new Date("2019-05-03T12:38:08");
-              Transaction.aggregate([
-                {
-                  $addFields: {
-<<<<<<< HEAD
-                    month: { $month: "$dateIn" },
-                    year: { $year: "$dateIn" }
-                  }
-                },
-                {
-                  $match: {
-                    member: transaction.member,
-                    month: dateNow.getMonth(),
-                    year: dateNow.getFullYear()
-=======
-                    "month" : {$month: $dateIn},
-                    "year": {$year: $dateIn}
-                   }
-                },
-                {
-                  $match: { 
-                    member: transaction.member,
-                    month: {$month: Date.now()},
-                    year: {$year: Date.now()}
->>>>>>> d497090d69e0b493592fc3d3568c071bddf8d48c
-                  }
-                },
-                {
-                  $group: {
-                    _id: null,
-                    total: {
-                      $sum: "$total"
-                    },
-                    count: {
-                      $sum: 1
-                    }
-                  }
-                }
-              ]).then(transacts => {
-                console.log(transacts);
-                axios
-                  .get(
-                    "https://laundry-microservice-diskon.herokuapp.com/api/v1/rules/diskon?",
+              transaction.save()
+                .then(transaction => {
+                  let dateNow = new Date();
+                  Transaction.aggregate([
                     {
-                      params: {
-                        f: transacts[0].count,
-                        b: transacts[0].total
+                      $addFields: {
+                        month: { $month: "$dateIn" },
+                        year: { $year: "$dateIn" }
+                      }
+                    },
+                    {
+                      $match: {
+                        member: transaction.member,
+                        month: dateNow.getMonth() + 1,
+                        year: dateNow.getFullYear()
+                      }
+                    },
+                    {
+                      $group: {
+                        _id: null,
+                        total: {
+                          $sum: "$total"
+                        },
+                        count: {
+                          $sum: 1
+                        }
                       }
                     }
-                  )
-                  .then(response => {
-                    transaction.discount = response.data.diskon;
-                    transaction.grandTotal =
-                      (transaction.total * (100 - transaction.discount)) / 100;
-                    transaction.save().then(transact => res.json(transact));
+                  ]).then(transacts => {
+                    console.log(transacts);
+                    axios
+                      .get(
+                        "https://laundry-microservice-diskon.herokuapp.com/api/v1/rules/diskon?",
+                        {
+                          params: {
+                            f: transacts[0].count,
+                            b: transacts[0].total
+                          }
+                        }
+                      )
+                      .then(response => {
+                        transaction.discount = response.data.diskon;
+                        transaction.grandTotal =
+                          (transaction.total * (100 - transaction.discount)) / 100;
+                        transaction.save().then(transact => res.json(transact));
+                      });
                   });
-              });
+                })
             })
         )
         .catch(err => console.log(err));
