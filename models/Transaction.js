@@ -19,7 +19,8 @@ const transactionSchema = mongoose.Schema({
   },
   dateIn: {
     type: Date,
-    default: Date.now()
+    // default: Date.now()
+    default: new Date("2019-04-03T12:38:08")
   },
   dateOut: {
     type: Date,
