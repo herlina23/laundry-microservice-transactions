@@ -13,9 +13,13 @@ const detailSchema = mongoose.Schema({
     required: true
   },
   process: {
-    type: String,
-    enum: ["Baru", "Sedang Dicuci", "Sedang Disetrika", "Selesai", "Diambil"],
-    default: "Baru"
+    // type: String,
+    // enum: ["Baru", "Sedang Dicuci", "Sedang Disetrika", "Selesai", "Diambil"],
+    // default: "Baru"
+
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Process",
+    required: true
   },
   qty: {
     type: Number,

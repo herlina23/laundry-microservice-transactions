@@ -39,10 +39,15 @@ const transactionSchema = mongoose.Schema({
     type: Number,
     default: 0
   },
-  paymentStatus: {
-    type: String,
-    enum: ["lunas", "belum lunas"],
-    default: "belum lunas"
+  // paymentStatus: {
+  //   type: String,
+  //   enum: ["lunas", "belum lunas"],
+  //   default: "belum lunas"
+  // },
+  status: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Status",
+    required: true
   },
   recepient: {
     type: String,
