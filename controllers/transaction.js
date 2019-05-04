@@ -6,6 +6,7 @@ const Service = require("../models/Service");
 
 const User = require("../models/User");
 const Rule = require("../models/Rule");
+const Process = require("../models/Process");
 
 const axios = require("axios");
 
@@ -14,6 +15,7 @@ module.exports = {
     Transaction.find()
       .populate("user")
       .populate("member")
+      .populatep("status")
       .then(transaction => res.json(transaction))
       .catch(err => console.log(err));
   },
@@ -21,6 +23,7 @@ module.exports = {
     Transaction.findById(req.params.id)
       .populate("user")
       .populate("member")
+      .populate("status")
       .then(transaction => res.json(transaction))
       .catch(err => console.log(err));
   },
@@ -28,6 +31,7 @@ module.exports = {
     Transaction.find({ invoice: req.params.invoice })
       .populate("user")
       .populate("member")
+      .populate("status")
       .then(transaction => res.json(transaction))
       .catch(err => console.log(err));
   },
@@ -37,6 +41,7 @@ module.exports = {
         Transaction.find({ member: member._id })
           .populate("user")
           .populate("member")
+          .populate("status")
           .then(transaction => res.json(transaction))
           .catch(err => console.log(err));
       })

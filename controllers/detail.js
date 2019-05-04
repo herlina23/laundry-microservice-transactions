@@ -5,6 +5,7 @@ module.exports = {
     Detail.find({ transaction: req.params.id_trans })
       .populate("transaction")
       .populate("service")
+      .populate("process")
       .then(detail => res.json(detail))
       .catch(err => console.log(err));
   },
