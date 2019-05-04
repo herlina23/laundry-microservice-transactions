@@ -6,7 +6,7 @@ const Service = require("../models/Service");
 
 const User = require("../models/User");
 const Rule = require("../models/Rule");
-const Process = require("../models/Process");
+const Status = require("../models/Status");
 
 const axios = require("axios");
 
