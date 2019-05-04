@@ -20,8 +20,8 @@ app.use(express.json());
 app.use("/api/v1/transactions", require("./routes/transactions"));
 app.use("/api/v1/details", require("./routes/details"));
 app.use("/api/v1/services", require("./routes/services"));
-app.use("/api/v1/dreports", require("./routes/dreports"));
-app.use("/api/v1/mreports", require("./routes/mreports"));
+// app.use("/api/v1/dreports", require("./routes/dreports"));
+// app.use("/api/v1/mreports", require("./routes/mreports"));
 
 const PORT = process.env.PORT || 3002;
 app.listen(PORT, console.log(`Server started on Port ${PORT}`));

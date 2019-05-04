@@ -3,7 +3,7 @@ const Member = require("../models/Member");
 const shortid = require("shortid");
 const Detail = require("../models/Detail");
 const Service = require("../models/Service");
-const Member = require("../models/Member");
+
 const User = require("../models/User");
 const Rule = require("../models/Rule");
 

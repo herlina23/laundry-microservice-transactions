@@ -2,19 +2,19 @@ const Detail = require("../models/Detail");
 
 module.exports = {
   index: (req, res) => {
-    Detail.find()
+    Detail.find({ transaction: req.params.id_trans })
       .populate("transaction")
       .populate("service")
       .then(detail => res.json(detail))
       .catch(err => console.log(err));
   },
-  show: (req, res) => {
-    Detail.findById(req.params.id)
-      .populate("transaction")
-      .populate("service")
-      .then(detail => res.json(detail))
-      .catch(err => console.log(err));
-  },
+  // show: (req, res) => {
+  //   Detail.findById(req.params.id)
+  //     .populate("transaction")
+  //     .populate("service")
+  //     .then(detail => res.json(detail))
+  //     .catch(err => console.log(err));
+  // },
   update: (req, res) => {
     if (req.user.role == "kasir" || req.user.role == "admin") {
       Detail.findOneAndUpdate(
