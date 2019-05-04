@@ -3,6 +3,8 @@ const Member = require("../models/Member");
 const shortid = require("shortid");
 const Detail = require("../models/Detail");
 const Service = require("../models/Service");
+const Member = require("../models/Member");
+const User = require("../models/User");
 const Rule = require("../models/Rule");
 
 const axios = require("axios");
@@ -47,59 +49,77 @@ module.exports = {
           Detail.find({ transaction: transaction._id })
             .populate("service")
             .then(details => {
+              Date.prototype.addDays = function(days) {
+                var date = new Date(this.valueOf());
+                date.setDate(date.getDate() + days);
+                return date;
+              };
               let total = 0;
+              //menambahkan dateout + hari sesuai service
+              let days = 0;
               details.forEach(detail => {
                 total += detail.qty * detail.service.tarif;
+                if (detail.service.days > days) {
+                  days = detail.service.days;
+                }
               });
+              //menambahkan dateout + hari sesuai service
+              let dateOutNew = new Date();
+              dateOutNew.addDays(days);
+              transaction.dateOut = dateOutNew;
               transaction.total = total;
-              transaction.save()
-                .then(transaction => {
-                  let dateNow = new Date();
-                  Transaction.aggregate([
-                    {
-                      $addFields: {
-                        month: { $month: "$dateIn" },
-                        year: { $year: "$dateIn" }
-                      }
-                    },
-                    {
-                      $match: {
-                        member: transaction.member,
-                        month: dateNow.getMonth() + 1,
-                        year: dateNow.getFullYear()
-                      }
-                    },
-                    {
-                      $group: {
-                        _id: null,
-                        total: {
-                          $sum: "$total"
-                        },
-                        count: {
-                          $sum: 1
-                        }
+              transaction.save().then(transaction => {
+                let dateNow = new Date();
+                Transaction.aggregate([
+                  {
+                    $addFields: {
+                      month: {
+                        $month: "$dateIn"
+                      },
+                      year: {
+                        $year: "$dateIn"
                       }
                     }
-                  ]).then(transacts => {
-                    console.log(transacts);
-                    axios
-                      .get(
-                        "https://laundry-microservice-diskon.herokuapp.com/api/v1/rules/diskon?",
-                        {
-                          params: {
-                            f: transacts[0].count,
-                            b: transacts[0].total
-                          }
+                  },
+                  {
+                    $match: {
+                      member: transaction.member,
+                      month: dateNow.getMonth() + 1,
+                      year: dateNow.getFullYear()
+                    }
+                  },
+                  {
+                    $group: {
+                      _id: null,
+                      total: {
+                        $sum: "$total"
+                      },
+                      count: {
+                        $sum: 1
+                      }
+                    }
+                  }
+                ]).then(transacts => {
+                  console.log(transacts);
+                  axios
+                    .get(
+                      "https://laundry-microservice-diskon.herokuapp.com/api/v1/rules/diskon?",
+                      {
+                        params: {
+                          f: transacts[0].count,
+                          b: transacts[0].total
                         }
-                      )
-                      .then(response => {
-                        transaction.discount = response.data.diskon;
-                        transaction.grandTotal =
-                          (transaction.total * (100 - transaction.discount)) / 100;
-                        transaction.save().then(transact => res.json(transact));
-                      });
-                  });
-                })
+                      }
+                    )
+                    .then(response => {
+                      transaction.discount = response.data.diskon;
+                      transaction.grandTotal =
+                        (transaction.total * (100 - transaction.discount)) /
+                        100;
+                      transaction.save().then(transact => res.json(transact));
+                    });
+                });
+              });
             })
         )
         .catch(err => console.log(err));
