@@ -20,6 +20,9 @@ app.use(express.json());
 app.use("/api/v1/transactions", require("./routes/transactions"));
 app.use("/api/v1/details", require("./routes/details"));
 app.use("/api/v1/services", require("./routes/services"));
+app.use("/api/v1/statuses", require("./routes/statuses"));
+app.use("/api/v1/processes", require("./routes/processes"));
+
 // app.use("/api/v1/dreports", require("./routes/dreports"));
 // app.use("/api/v1/mreports", require("./routes/mreports"));
 
