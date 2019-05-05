@@ -50,32 +50,30 @@ module.exports = {
   hitung: (req, res) => {
     if (req.user.role == "admin" || req.user.role == "kasir") {
       Transaction.findById(req.params.id)
-        .then(transaction =>
+        .then(transaction => {
           Detail.find({ transaction: transaction._id })
-            .populate("service")
-            .then(details => {
-              Date.prototype.addDays = function(days) {
-                var date = new Date(this.valueOf());
-                date.setDate(date.getDate() + days);
-                return date;
-              };
-              let total = 0;
-              //menambahkan dateout + hari sesuai service
-              let days = 0;
-              details.forEach(detail => {
-                total += detail.qty * detail.service.tarif;
-                if (detail.service.days > days) {
-                  days = detail.service.days;
-                }
-              });
-              //menambahkan dateout + hari sesuai service
-              let dateOutNew = new Date();
-              dateOutNew.addDays(days);
-              transaction.dateOut = dateOutNew;
-              transaction.total = total;
-              transaction.save().then(transaction => {
-                let dateNow = new Date();
-                Transaction.aggregate([
+          .populate("service")
+          .then(details => {
+            let total = 0;
+            //menambahkan dateout + hari sesuai service
+            let days = 0;
+            details.forEach(detail => {
+              total += detail.qty * detail.service.tarif;
+              if (detail.service.days > days) {
+                days = detail.service.days;
+              }
+            });
+            //menambahkan dateout + hari sesuai service
+            function addDays(date, days) {
+              var result = new Date(date);
+              result.setDate(result.getDate() + days);
+              return result;
+            }
+            transaction.dateOut = addDays(transaction.dateIn, days);
+            transaction.total = total;
+            transaction.save().then(transaction => {
+              let dateNow = new Date();
+              Transaction.aggregate([
                   {
                     $addFields: {
                       month: {
@@ -126,6 +124,7 @@ module.exports = {
                 });
               });
             })
+          }
         )
         .catch(err => console.log(err));
     } else {

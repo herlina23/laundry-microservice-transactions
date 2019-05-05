@@ -23,8 +23,5 @@ app.use("/api/v1/services", require("./routes/services"));
 app.use("/api/v1/statuses", require("./routes/statuses"));
 app.use("/api/v1/processes", require("./routes/processes"));
 
-// app.use("/api/v1/dreports", require("./routes/dreports"));
-// app.use("/api/v1/mreports", require("./routes/mreports"));
-
 const PORT = process.env.PORT || 3002;
 app.listen(PORT, console.log(`Server started on Port ${PORT}`));
