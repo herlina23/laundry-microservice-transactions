@@ -1,11 +1,7 @@
 const Detail = require("../models/Detail");
-const Transaction = require('../models/Transaction')
+const Transaction = require("../models/Transaction");
 const Process = require("../models/Process");
-<<<<<<< HEAD
 const Service = require("../models/Service");
-=======
-const axios = require('axios')
->>>>>>> 725f9861341d9e48379d9cefd028a044fbd7865e
 
 module.exports = {
   index: (req, res) => {
@@ -40,31 +36,30 @@ module.exports = {
     if (req.user.role == "kasir" || req.user.role == "admin") {
       Detail.create({ ...req.body })
         .then(detail => {
-          Transaction.findById(detail.transaction)
-          .then(transaction => {
+          Transaction.findById(detail.transaction).then(transaction => {
             Detail.find({ transaction: transaction._id })
-            .populate("service")
-            .then(details => {
-              let total = 0;
-              //menambahkan dateout + hari sesuai service
-              let days = 0;
-              details.forEach(detail => {
-                total += detail.qty * detail.service.tarif;
-                if (detail.service.days > days) {
-                  days = detail.service.days;
+              .populate("service")
+              .then(details => {
+                let total = 0;
+                //menambahkan dateout + hari sesuai service
+                let days = 0;
+                details.forEach(detail => {
+                  total += detail.qty * detail.service.tarif;
+                  if (detail.service.days > days) {
+                    days = detail.service.days;
+                  }
+                });
+                //menambahkan dateout + hari sesuai service
+                function addDays(date, days) {
+                  var result = new Date(date);
+                  result.setDate(result.getDate() + days);
+                  return result;
                 }
-              });
-              //menambahkan dateout + hari sesuai service
-              function addDays(date, days) {
-                var result = new Date(date);
-                result.setDate(result.getDate() + days);
-                return result;
-              }
-              transaction.dateOut = addDays(transaction.dateIn, days);
-              transaction.total = total;
-              transaction.save().then(transaction => {
-                let dateNow = new Date();
-                Transaction.aggregate([
+                transaction.dateOut = addDays(transaction.dateIn, days);
+                transaction.total = total;
+                transaction.save().then(transaction => {
+                  let dateNow = new Date();
+                  Transaction.aggregate([
                     {
                       $addFields: {
                         month: {
@@ -114,10 +109,9 @@ module.exports = {
                       });
                   });
                 });
-              })
-            }
-          )
-          })
+              });
+          });
+        })
         .catch(err => console.log(err));
     } else {
       res.sendStatus(403);
