@@ -2,7 +2,7 @@ const Service = require("../models/Service");
 
 module.exports = {
   index: (req, res) => {
-    if (req.user.role == "admin") {
+    if (req.user.role == "kasir" || req.user.role == "admin") {
       Service.find()
         .then(service => res.json(service))
         .catch(err => console.log(err));
@@ -11,7 +11,7 @@ module.exports = {
     }
   },
   show: (req, res) => {
-    if (req.user.role == "admin") {
+    if (req.user.role == "kasir" || req.user.role == "admin") {
       Service.findById(req.params.id)
         .then(service => res.json(service))
         .catch(err => console.log(err));

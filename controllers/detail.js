@@ -1,5 +1,6 @@
 const Detail = require("../models/Detail");
 const Process = require("../models/Process");
+const Service = require("../models/Service");
 
 module.exports = {
   index: (req, res) => {
