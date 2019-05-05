@@ -15,7 +15,7 @@ module.exports = {
     Transaction.find()
       .populate("user")
       .populate("member")
-      .populatep("status")
+      .populate("status")
       .then(transaction => res.json(transaction))
       .catch(err => console.log(err));
   },
