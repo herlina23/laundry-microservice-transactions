@@ -7,7 +7,6 @@ const {
   show,
   store,
   update,
-  search,
   destroy
 } = require("../controllers/status");
 
