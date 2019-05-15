@@ -19,6 +19,19 @@ module.exports = {
   //     .then(detail => res.json(detail))
   //     .catch(err => console.log(err));
   // },
+  searchByInvoice: (req, res) => {
+    Transaction.findOne({ invoice: req.params.invoice })
+      .then(transaction => {
+        Detail.find({ transaction: transaction._id })
+          .populate("transaction")
+          .populate("service")
+          .populate("process")
+          .then(detail => res.json(detail))
+          .catch(err => console.log(err));
+      })
+      .catch(err => console.log(err));
+  },
+
   update: (req, res) => {
     if (req.user.role == "kasir" || req.user.role == "admin") {
       Detail.findOneAndUpdate(
