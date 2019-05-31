@@ -25,6 +25,10 @@ const detailSchema = mongoose.Schema({
     type: Number,
     required: true
   }
+  // pay: {
+  //   type: Number,
+  //   default: 0
+  // }
 });
 
 const Detail = (module.exports = mongoose.model("Detail", detailSchema));

@@ -7,9 +7,11 @@ const {
   show,
   store,
   update,
-  destroy
+  destroy,
+  show_service
 } = require("../controllers/service");
 
+router.get("/show_service/", show_service);
 router.use(verifyToken);
 
 router.get("/", index);

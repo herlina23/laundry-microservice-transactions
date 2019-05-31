@@ -1,6 +1,11 @@
 const Service = require("../models/Service");
 
 module.exports = {
+  show_service: (req, res) => {
+    Service.find()
+      .then(service => res.json(service))
+      .catch(err => console.log(err));
+  },
   index: (req, res) => {
     if (req.user.role == "kasir" || req.user.role == "admin") {
       Service.find()
