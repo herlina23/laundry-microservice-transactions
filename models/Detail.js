@@ -24,11 +24,12 @@ const detailSchema = mongoose.Schema({
   qty: {
     type: Number,
     required: true
+  },
+  lastupdate: {
+    type: Date,
+    default: Date.now
   }
-  // pay: {
-  //   type: Number,
-  //   default: 0
-  // }
+  // timestamp: true
 });
 
 const Detail = (module.exports = mongoose.model("Detail", detailSchema));

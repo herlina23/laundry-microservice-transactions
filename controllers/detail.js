@@ -37,7 +37,9 @@ module.exports = {
     if (req.user.role == "kasir" || req.user.role == "admin") {
       Detail.findOneAndUpdate(
         { _id: req.params.id },
+
         { $set: req.body },
+        // { $set: { lastupdate: new Date() } },
         { new: true }
       )
         .then(detail => res.json(detail))
@@ -46,6 +48,7 @@ module.exports = {
       res.sendStatus(403);
     }
   },
+
   store: (req, res) => {
     if (req.user.role == "kasir" || req.user.role == "admin") {
       Detail.create({ ...req.body })

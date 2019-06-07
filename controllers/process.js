@@ -32,6 +32,7 @@ module.exports = {
       res.sendStatus(403);
     }
   },
+
   store: (req, res) => {
     if (req.user.role == "admin" || req.user.role == "kasir") {
       let newProcess = { ...req.body };
