@@ -14,7 +14,7 @@ const detailSchema = mongoose.Schema({
   },
   process: {
     // type: String,
-    // enum: ["Baru", "Sedang Dicuci", "Sedang Disetrika", "Selesai", "Diambil"],
+    // enum: ["Baru",her"Sedang Dicuci", "Sedang Disetrika", "Selesai", "Diambil"],
     // default: "Baru"
 
     type: mongoose.Schema.Types.ObjectId,
@@ -29,7 +29,8 @@ const detailSchema = mongoose.Schema({
   //   type: Date,
   //   default: Date.now
   // }
-  timestamp: true
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
 });
 
 const Detail = (module.exports = mongoose.model("Detail", detailSchema));
