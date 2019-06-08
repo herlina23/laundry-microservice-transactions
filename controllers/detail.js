@@ -37,9 +37,16 @@ module.exports = {
     if (req.user.role == "kasir" || req.user.role == "admin") {
       Detail.findOneAndUpdate(
         { _id: req.params.id },
-        // { $set: req.body },
-        { $set: { updatedAt: new Date() } },
-        // { $set: { lastupdate: new Date() } },
+        //  { $set: req.body },
+        {
+          $set: {
+            updatedAt: new Date(),
+            process: req.body.process,
+            service: req.body.service,
+            qty: req.body.qty
+          }
+        },
+
         { new: true }
       )
         .then(detail => res.json(detail))
