@@ -37,8 +37,8 @@ module.exports = {
     if (req.user.role == "kasir" || req.user.role == "admin") {
       Detail.findOneAndUpdate(
         { _id: req.params.id },
-
-        { $set: req.body },
+        // { $set: req.body },
+        { $set: { updatedAt: new Date() } },
         // { $set: { lastupdate: new Date() } },
         { new: true }
       )
