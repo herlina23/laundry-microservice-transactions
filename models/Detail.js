@@ -25,11 +25,11 @@ const detailSchema = mongoose.Schema({
     type: Number,
     required: true
   },
-  lastupdate: {
-    type: Date,
-    default: Date.now
-  }
-  // timestamp: true
+  // lastupdate: {
+  //   type: Date,
+  //   default: Date.now
+  // }
+  timestamp: true
 });
 
 const Detail = (module.exports = mongoose.model("Detail", detailSchema));
