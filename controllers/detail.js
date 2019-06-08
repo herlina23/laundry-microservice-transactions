@@ -41,9 +41,9 @@ module.exports = {
         {
           $set: {
             updatedAt: new Date(),
-            process: req.body.process,
-            service: req.body.service,
-            qty: req.body.qty
+            process: req.body,
+            service: req.body,
+            qty: req.body
           }
         },
 
